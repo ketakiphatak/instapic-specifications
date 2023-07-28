@@ -1,0 +1,154 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: InstaPic - OpenAPI 3.0
+servers:
+  - url: http://api.instapic.com/v1
+paths:
+  /photos/{photoId}:
+    get:
+      tags:
+        - Photo Service
+      summary: 'Get Photo'
+      description: Retrieve photo details with photoId.
+      operationId: 'findphotoById'
+      parameters:
+        - name: photoId
+          in: path
+          required: true
+          schema:
+             type: string
+             format: uuid
+      responses:
+        '200':
+          description: Photo details were found with the given photoId. Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400': 
+           description: The server could not understand the request due to invalid syntax.Invalid photoId
+    post:
+      tags:
+        - Photo Service
+      summary: 'Add Photo'
+      description: This method is used to upload/add the photos.
+      operationId: 'addPhoto'
+      parameters:
+        - name: photoId
+          in: path
+          required: true
+          schema:
+             type: string
+             format: uuid
+      responses:
+        '200':
+          description: The photo was successfully uploaded.
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+            description: The request method is known by the server but is not supported by the target resource. Invalid input.
+    delete:
+      tags:
+        - Photo Service
+      summary: 'Delete Photo'
+      description: Used to delete a photo.
+      operationId: 'deletePhoto'
+      parameters:
+        - name: photoId
+          in: path
+          description: Photo Id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+            description: The requested photo was deleted.
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+                  
+        default: 
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+  /photos:
+    put:
+      tags:
+        - Photo Service
+      summary: 'Update Photo'
+      description: Used to Update a Photo.
+      operationId: 'updatePhoto'
+      responses:
+          '201':
+            description: The Photo was successfully updated.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AddPhotoRequest'
+          '400':
+            description: The server could not understand the request due to invalid syntax.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+                  
+          default: 
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/AddPhotoRequest" 
+components:
+  schemas:
+    AddPhotoRequest:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+        caption:
+          type: "string"
+        photo:
+          description: Base 64 encoded PNG image. Photo size should be 750px X 750px
+          type: "string"
+    Photo:
+      properties:
+        timestamp:
+          description: Time stamp date-time as defined by RFC 3339 eg. 2017-07-21T17:32:28Z
+          type: "string"
+          format: date-time
+        photoId:
+          type: "string"
+          format: uuid
+        photoUrl:
+          type: "string"
+    Error:
+      type: "object"
+      properties:
+        code:
+          type: "integer"
+          format: "int64"
+        description:
+          type: "string"
+        
+       
+       

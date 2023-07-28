@@ -1,1 +1,1 @@
-# instapic-specifications
+# Instapic Swagger Specifications
